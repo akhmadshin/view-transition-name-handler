@@ -34,6 +34,7 @@ export const IframesList: React.FC<Props> =  ({ id }) => {
       <Container>
         {youTubeId && (
           <div
+            id="transition-el"
             data-src={iframe.content.thumbnail}
           >
             <YouTubeEmbed
@@ -51,7 +52,6 @@ export const IframesList: React.FC<Props> =  ({ id }) => {
               <Link href={`/${id + index + 1}`}>
                 <Image
                   data-src={iframe.content.thumbnail}
-                  id="transition-img"
                   className="aspect-[16/9] transitionable-img"
                   priority
                   sizes="100vw"

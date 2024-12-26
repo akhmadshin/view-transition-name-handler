@@ -22,7 +22,7 @@ export const ImagesList: React.FC<Props> =  ({ id }) => {
     <>
       <Container>
         <Image
-          id="transition-img"
+          id="transition-el"
           className="aspect-[16/9] transitionable-img"
           priority
           sizes="100vw"

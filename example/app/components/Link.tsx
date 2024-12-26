@@ -13,7 +13,7 @@ export const Link: React.FC<PropsWithChildren<Props>> = ({ children, onClick, pl
     }
     window.placeholderData = placeholderData;
 
-    const transitionImg = e.currentTarget.querySelector<HTMLImageElement>('.transitionable-img') || document.querySelector('#transition-img');
+    const transitionImg = e.currentTarget.querySelector<HTMLImageElement>('.transitionable-img') || document.querySelector('#transition-el');
     const src = transitionImg ? transitionImg.src.replace(location.origin || '', '') : '';
 
     handleTransitionStarted({
