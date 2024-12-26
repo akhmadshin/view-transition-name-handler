@@ -9,6 +9,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import { DefaultCatchBoundary } from '@/components/DefaultCatchBoundary'
 import { NotFound } from '@/components/NotFound'
 import appCss from '@/styles/app.css?url'
+import ytEmbed from '@/styles/yt-embed.css?url'
 import viewTransitions from '@/styles/view-transitions.css?url'
 import { Layout } from '@/components/Layout';
 import { useEffect } from 'react';
@@ -36,6 +37,7 @@ export const Route = createRootRouteWithContext<{
     links: [
       { rel: 'stylesheet', href: appCss },
       { rel: 'stylesheet', href: viewTransitions },
+      { rel: 'stylesheet', href: ytEmbed },
       {
         rel: 'apple-touch-icon',
         sizes: '180x180',

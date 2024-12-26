@@ -18,7 +18,7 @@ export const Link: React.FC<PropsWithChildren<Props>> = ({ children, onClick, pl
 
     handleTransitionStarted({
       element: transitionImg,
-      attributeName: 'src',
+      attributeName: 'data-src',
       attributeValue: src,
     });
   }

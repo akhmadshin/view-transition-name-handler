@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import React, { useMemo } from 'react'
 import { ImagesList } from '@/components/ImagesList'
+import { IframesList } from '@/components/IframesList';
 
 export const Route = createFileRoute('/$postId')({
   loader: async ({ params: { postId } }) => {
@@ -23,5 +24,5 @@ function PostComponent() {
     const slugInt = postId ? parseInt(postId.match(r)![0]) : 0
     return slugInt ?? 0
   }, [postId])
-  return <ImagesList id={id} />
+  return <IframesList id={id} />
 }

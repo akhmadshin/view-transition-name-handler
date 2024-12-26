@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ImagesList } from '@/components/ImagesList';
+import { IframesList } from '@/components/IframesList';
 
 export const Route = createFileRoute('/')({
   head: () => ({
@@ -10,6 +11,6 @@ export const Route = createFileRoute('/')({
 
 function HomePageComponent() {
   return (
-    <ImagesList id={0} />
+    <IframesList id={0} />
   )
 }
