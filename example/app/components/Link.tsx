@@ -17,9 +17,9 @@ export const Link: React.FC<PropsWithChildren<Props>> = ({ children, onClick, pl
     const src = transitionImg ? transitionImg.src.replace(location.origin || '', '') : '';
 
     handleTransitionStarted({
-      element: transitionImg,
-      attributeName: 'data-src',
-      attributeValue: src,
+      fromElement: transitionImg,
+      toAttributeName: 'data-src',
+      toAttributeValue: src,
     });
   }
 

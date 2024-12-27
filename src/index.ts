@@ -44,12 +44,12 @@ export const handleTransitionStarted = ({ fromElement, toAttributeName = 'src', 
   }
 }
 
-export const handleHistoryTransitionStarted = (nextRouterKey: string = 'initial') => {
+export const handleHistoryTransitionStarted = (navigatedRouterKey: string = 'initial') => {
   const routerKey = key ?? 'initial';
   transitionEndAttributeName = undefined;
   transitionEndAttributeValue = undefined;
 
-  const transitionElementSelector = sessionStorage.getItem(`__VTNH_view_transition_element_selector_${routerKey}-${nextRouterKey}`) || '';
+  const transitionElementSelector = sessionStorage.getItem(`__VTNH_view_transition_element_selector_${routerKey}-${navigatedRouterKey}`) || '';
   if (transitionElementSelector) {
     const transitionElement = document.querySelector<HTMLElement>(transitionElementSelector);
     if (transitionElement) {
@@ -59,8 +59,8 @@ export const handleHistoryTransitionStarted = (nextRouterKey: string = 'initial'
   }
 }
 
-export const handleRouteChangeComplete = (_key?: string) => {
-  const routerKey = _key ?? 'initial';
+export const handleRouteChangeComplete = (currentRouterKey?: string) => {
+  const routerKey = currentRouterKey ?? 'initial';
   previousKey = key ?? 'initial';
   key = routerKey;
 
