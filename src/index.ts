@@ -29,18 +29,18 @@ const getElementSelector = (elm: Element) => {
   return names.join(">");
 }
 
-export const handleTransitionStarted = ({ element, attributeName = 'src', attributeValue }: {
-  element?: HTMLElement | null;
-  attributeName?: string;
-  attributeValue: string;
+export const handleTransitionStarted = ({ fromElement, toAttributeName = 'src', toAttributeValue }: {
+  fromElement?: HTMLElement | null;
+  toAttributeName?: string;
+  toAttributeValue: string;
 }) => {
-  if (element) {
-    const linkSelector = getElementSelector(element);
+  if (fromElement) {
+    const linkSelector = getElementSelector(fromElement);
     transitionEndElementSelector = linkSelector;
-    transitionEndAttributeValue = attributeValue;
-    transitionEndAttributeName = attributeName;
+    transitionEndAttributeValue = toAttributeValue;
+    transitionEndAttributeName = toAttributeName;
     cleanUpTransition();
-    element.style.viewTransitionName = VIEW_TRANSITION_NAME;
+    fromElement.style.viewTransitionName = VIEW_TRANSITION_NAME;
   }
 }
 
@@ -72,17 +72,17 @@ export const handleRouteChangeComplete = (_key?: string) => {
   const transitionElementSelector = sessionStorage.getItem(`__VTNH_view_transition_element_selector_${backRouterKey}`);
 
   if (transitionElementSelector) {
-    handleHistoryNavigationComplete(transitionElementSelector);
+    const transitionEndElement = document.querySelector<HTMLElement | null>(transitionElementSelector);
+    handleHistoryNavigationComplete(transitionEndElement);
   } else {
     handleLinkNavigationComplete(backRouterKey);
   }
 }
 
-const handleHistoryNavigationComplete = (selector: string) => {
-  const element = document.querySelector<HTMLElement>(selector);
-  if (element) {
+const handleHistoryNavigationComplete = (transitionEndElement: HTMLElement | null) => {
+  if (transitionEndElement) {
     cleanUpTransition();
-    element.style.viewTransitionName = VIEW_TRANSITION_NAME;
+    transitionEndElement.style.viewTransitionName = VIEW_TRANSITION_NAME;
   }
 }
 
