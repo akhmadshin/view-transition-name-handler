@@ -1,12 +1,11 @@
-const VIEW_TRANSITION_NAME = '__VTNH_transition-name';
 let key = 'initial';
 let previousKey = undefined;
 let transitionEndElementSelector = undefined;
 let transitionEndAttributeName = undefined;
 let transitionEndAttributeValue = undefined;
 
-const cleanUpTransition = () => {
-  const viewTransitionElements = Array.from(document.querySelectorAll<HTMLElement>('[style*="view-transition-name: ' + VIEW_TRANSITION_NAME + '"]'));
+const cleanUpTransition = (name: string) => {
+  const viewTransitionElements = Array.from(document.querySelectorAll<HTMLElement>('[style*="view-transition-name: ' + name + '"]'));
   viewTransitionElements.forEach((el) => {
     el.style.viewTransitionName = '';
   });
@@ -39,8 +38,9 @@ export const handleTransitionStarted = ({ fromElement, toAttributeName = 'src', 
     transitionEndElementSelector = linkSelector;
     transitionEndAttributeValue = toAttributeValue;
     transitionEndAttributeName = toAttributeName;
-    cleanUpTransition();
-    fromElement.style.viewTransitionName = VIEW_TRANSITION_NAME;
+    const viewTransitionName = linkSelector.replace(/[^a-zA-Z0-9]/g, '');
+    cleanUpTransition(viewTransitionName);
+    fromElement.style.viewTransitionName = viewTransitionName;
   }
 }
 
@@ -48,13 +48,14 @@ export const handleHistoryTransitionStarted = (navigatedRouterKey: string = 'ini
   const routerKey = key ?? 'initial';
   transitionEndAttributeName = undefined;
   transitionEndAttributeValue = undefined;
-
+  const previousTransitionElementSelector = sessionStorage.getItem(`__VTNH_view_transition_element_selector_${navigatedRouterKey}-${routerKey}`);
   const transitionElementSelector = sessionStorage.getItem(`__VTNH_view_transition_element_selector_${routerKey}-${navigatedRouterKey}`) || '';
   if (transitionElementSelector) {
+    const viewTransitionName = previousTransitionElementSelector.replace(/[^a-zA-Z0-9]/g, '');
     const transitionElement = document.querySelector<HTMLElement>(transitionElementSelector);
     if (transitionElement) {
-      cleanUpTransition();
-      transitionElement.style.viewTransitionName = VIEW_TRANSITION_NAME;
+      cleanUpTransition(viewTransitionName);
+      transitionElement.style.viewTransitionName = viewTransitionName;
     }
   }
 }
@@ -66,35 +67,35 @@ export const handleRouteChangeComplete = (currentRouterKey?: string) => {
 
   if (transitionEndElementSelector) {
     sessionStorage.setItem(`__VTNH_view_transition_element_selector_${previousKey}-${key}`, transitionEndElementSelector);
-    transitionEndElementSelector = undefined;
   }
   const backRouterKey = `${key}-${previousKey}`;
   const transitionElementSelector = sessionStorage.getItem(`__VTNH_view_transition_element_selector_${backRouterKey}`);
-
   if (transitionElementSelector) {
+    const viewTransitionName = transitionElementSelector.replace(/[^a-zA-Z0-9]/g, '');
     const transitionEndElement = document.querySelector<HTMLElement | null>(transitionElementSelector);
-    handleHistoryNavigationComplete(transitionEndElement);
+    handleHistoryNavigationComplete(transitionEndElement, viewTransitionName);
   } else {
-    handleLinkNavigationComplete(backRouterKey);
+    handleLinkNavigationComplete(backRouterKey, transitionEndElementSelector.replace(/[^a-zA-Z0-9]/g, ''));
   }
+  transitionEndElementSelector = undefined;
 }
 
-const handleHistoryNavigationComplete = (transitionEndElement: HTMLElement | null) => {
+const handleHistoryNavigationComplete = (transitionEndElement: HTMLElement | null, name: string) => {
   if (transitionEndElement) {
-    cleanUpTransition();
-    transitionEndElement.style.viewTransitionName = VIEW_TRANSITION_NAME;
+    cleanUpTransition(name);
+    transitionEndElement.style.viewTransitionName = name;
   }
 }
 
-const handleLinkNavigationComplete = (backRouterKey: string) => {
+const handleLinkNavigationComplete = (backRouterKey: string, name: string) => {
   const transitionElement = document.querySelector<HTMLElement>(`[${transitionEndAttributeName}="${transitionEndAttributeValue}"]`);
   transitionEndAttributeValue = undefined;
   transitionEndAttributeName = undefined;
 
   if (transitionElement) {
-    cleanUpTransition();
+    cleanUpTransition(name);
     const transitionElementSelector = getElementSelector(transitionElement) || '';
-    transitionElement.style.viewTransitionName = VIEW_TRANSITION_NAME;
+    transitionElement.style.viewTransitionName = name;
     sessionStorage.setItem(`__VTNH_view_transition_element_selector_${backRouterKey}`, transitionElementSelector);
   }
 }
