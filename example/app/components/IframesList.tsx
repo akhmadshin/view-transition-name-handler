@@ -5,6 +5,7 @@ import { Image } from '@/components/image';
 import { Link } from '@/components/Link';
 import { MOCK_YOUTUBE_IFRAMES } from '@/constants/MOCK_YOUTUBE_IFRAMES';
 import { YouTubeEmbed } from '@/components/YouTubeEmbed';
+import { useRouterState } from '@tanstack/react-router';
 
 interface Props {
   id: number
@@ -20,6 +21,7 @@ export const getYoutubeIdFromUrl = (url: string) => {
 
 export const IframesList: React.FC<Props> =  ({ id }) => {
   const iframe = MOCK_YOUTUBE_IFRAMES[id % 4];
+  const routerState = useRouterState();
 
   const nextIframes = [
     MOCK_YOUTUBE_IFRAMES[(id + 1) % 4],
@@ -33,23 +35,32 @@ export const IframesList: React.FC<Props> =  ({ id }) => {
     <>
       <Container>
         {youTubeId && (
-          <div
-            id="transition-el"
-            data-src={iframe.content.thumbnail}
-          >
-            <YouTubeEmbed
-              id={youTubeId}
-              thumbnail={iframe.content.thumbnail}
-              title={iframe.content.title}
-
-            />
+          <div>
+            <div
+              id="transition-title"
+              data-title={iframe.content.thumbnail}
+            >
+              <h1 className="text-4xl lg:text-6xl font-bold py-4">Title - {id}</h1>
+            </div>
+            <div
+              id="transition-video"
+              data-src={iframe.content.thumbnail}
+            >
+              <YouTubeEmbed
+                id={youTubeId}
+                thumbnail={iframe.content.thumbnail}
+                title={iframe.content.title}
+              />
+            </div>
           </div>
         )}
 
-        <div className="my-10 block grid grid-rows-2 grid-cols-2 lg:grid-rows-1 lg:grid-cols-4 gap-4">
+        <div className="my-10 block grid grid-rows-2 grid-cols-2 gap-4">
           {nextIframes.map((iframe, index) => {
             return (
               <Link href={`/${id + index + 1}`}>
+                <h3 data-title={iframe.content.thumbnail}
+                    className="text-lg lg:text-3xl font-bold pt-2 transitionable-title">Title - {id + index + 1}</h3>
                 <Image
                   data-src={iframe.content.thumbnail}
                   className="aspect-[16/9] transitionable-img"
