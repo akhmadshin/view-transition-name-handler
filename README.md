@@ -3,8 +3,8 @@
 That library manages the view-transition-name property between DOM nodes during navigation.
 * First class support for history(back/forward) navigation. 
 * No dependencies, just 100 lines of code.
-* Works with any router; you can use it with any meta-framework
-* Any scenario is possible. By utilizing custom data attributes you can achieve transition from `<img>` to any other tag (`<iframe>`/`<video>`/`<canvas>`/`<div>`).
+* Works with any router/meta-framework.
+* Any scenario is possible. By utilizing custom data attributes, you can achieve transitioning between any tags (`<img>`/`<iframe>`/`<video>`/`<canvas>`/`<div>`).
 
 ## Installation
 
