@@ -2,7 +2,7 @@
   "name": "view-transition-name-handler",
   "version": "0.0.3",
   "type": "module",
-  "description": "Tame View Transitions API in Next.js Pages Router",
+  "description": "That library manages the view-transition-name property between DOM nodes during navigation",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [

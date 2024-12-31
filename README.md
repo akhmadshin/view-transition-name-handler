@@ -1,6 +1,6 @@
 # view-transition-name-handler
 
-That library manages the view-transition-name property between two dom nodes during client navigation.
+That library manages the view-transition-name property between DOM nodes during navigation.
 * First class support for history(back/forward) navigation. 
 * No dependencies, just 100 lines of code.
 * Works with any router; you can use it with any meta-framework
