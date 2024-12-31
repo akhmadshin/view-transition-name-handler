@@ -19,10 +19,11 @@ $ yarn add view-transition-name-handler
 ### handleTransitionStarted
 Call that function before navigation
 ```
-handleTransitionStarted({ fromElement, toAttributeName = 'src', toAttributeValue })
+handleTransitionStarted([{ fromElement, toAttributeName = 'src', toAttributeValue, transitionName = '' }])
 ```
 * fromElement - DOM element that starts transition
 * toAttributeName and toAttributeValue - are used to find DOM element that should finish transition
+* transitionName - used for setting view-transition-name property, optional
 
 ### handleHistoryTransitionStarted
 Should be called on "popstate" event.
