@@ -55,7 +55,7 @@ export const IframesList: React.FC<Props> =  ({ id }) => {
           </div>
         )}
 
-        <div className="my-10 block grid grid-rows-2 grid-cols-2 gap-4">
+        <div className="my-4 block grid grid-rows-2 grid-cols-2 gap-4">
           {nextIframes.map((iframe, index) => {
             return (
               <Link href={`/${id + index + 1}`}>

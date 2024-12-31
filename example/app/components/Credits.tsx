@@ -3,8 +3,8 @@ import { GithubIcon } from 'lucide-react';
 
 export const Credits = () => {
   return (
-    <Container className="pb-6">
-      <div className="no-view-transition mt-4 flex items-center justify-center space-x-6">
+    <Container className="pb-2">
+      <div className="no-view-transition mt-2 flex items-center justify-center space-x-6">
         <p>
           <span>Made by </span>
           <a className="underline" target="_blank" href="https://akhmadshin.dev">akhmadshin.dev</a>
