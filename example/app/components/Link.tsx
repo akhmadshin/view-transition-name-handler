@@ -20,11 +20,13 @@ export const Link: React.FC<PropsWithChildren<Props>> = ({ children, onClick, pl
     handleTransitionStarted([
       {
         fromElement: transitionTitle,
+        transitionName: 'transition-title',
         toAttributeName: 'data-title',
         toAttributeValue: src,
       },
       {
         fromElement: transitionImg,
+        transitionName: 'transition-video',
         toAttributeName: 'data-src',
         toAttributeValue: src,
       },

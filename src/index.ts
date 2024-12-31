@@ -3,10 +3,11 @@ let previousKey = undefined;
 let endTransitions = [];
 
 const cleanUpTransition = (name: string) => {
-  const viewTransitionElements = Array.from(document.querySelectorAll<HTMLElement>('[style*="view-transition-name: ' + name + '"]'));
-  viewTransitionElements.forEach((el) => {
-    el.style.viewTransitionName = '';
-  });
+  const el = document.querySelector<HTMLElement>('[style*="view-transition-name: ' + name + '"]');
+  if (!el) {
+    return;
+  }
+  el.style.viewTransitionName = '';
 }
 
 const getElementSelector = (elm: Element) => {
@@ -28,19 +29,21 @@ const getElementSelector = (elm: Element) => {
 
 export const handleTransitionStarted = (transitions: {
   fromElement?: HTMLElement | null;
+  transitionName?: string;
   toAttributeName?: string;
   toAttributeValue: string;
 }[]) => {
-  endTransitions = transitions.map(({ fromElement, toAttributeName = 'src', toAttributeValue }) => {
+  endTransitions = transitions.map(({ fromElement, toAttributeName = 'src', toAttributeValue, transitionName = '' }) => {
     if (!fromElement) {
       return
     }
     const linkSelector = getElementSelector(fromElement);
     const viewTransitionName = linkSelector.replace(/[^a-zA-Z0-9]/g, '');
     cleanUpTransition(viewTransitionName);
-    fromElement.style.viewTransitionName = viewTransitionName;
+    fromElement.style.viewTransitionName = transitionName ? transitionName : viewTransitionName;
     return {
       fromSelector: linkSelector,
+      transitionName,
       toAttributeName,
       toAttributeValue,
     };
@@ -50,21 +53,23 @@ export const handleTransitionStarted = (transitions: {
 
 export const handleHistoryTransitionStarted = (navigatedRouterKey: string = 'initial') => {
   const routerKey = key ?? 'initial';
+  const transitionNames = (sessionStorage.getItem(`__VTNH_view_transition_names_${navigatedRouterKey}-${routerKey}`) || '').split(',');
   const previousTransitionElementSelectors = (sessionStorage.getItem(`__VTNH_view_transition_element_selector_${navigatedRouterKey}-${routerKey}`) || '').split(',');
   const transitionElementSelectors = (sessionStorage.getItem(`__VTNH_view_transition_element_selector_${routerKey}-${navigatedRouterKey}`) || '').split(',');
 
   transitionElementSelectors.forEach((selector, i) => {
     const previousSelector = previousTransitionElementSelectors[i];
+    const transitionName = transitionNames[i];
     if (selector && previousSelector) {
-      const viewTransitionName = previousSelector.replace(/[^a-zA-Z0-9]/g, '');
+      let viewTransitionName = previousSelector.replace(/[^a-zA-Z0-9]/g, '');
       const transitionElement = document.querySelector<HTMLElement>(selector);
       if (transitionElement) {
+        viewTransitionName = transitionName ? transitionName : viewTransitionName
         cleanUpTransition(viewTransitionName);
         transitionElement.style.viewTransitionName = viewTransitionName;
       }
     }
   })
-
 }
 
 export const handleRouteChangeComplete = (currentRouterKey?: string) => {
@@ -78,15 +83,20 @@ export const handleRouteChangeComplete = (currentRouterKey?: string) => {
       `__VTNH_view_transition_element_selector_${previousKey}-${key}`,
         endTransitions.map(({ fromSelector }) => fromSelector).join(',')
       );
+    sessionStorage.setItem(
+      `__VTNH_view_transition_names_${previousKey}-${key}`,
+        endTransitions.map(({ transitionName }) => transitionName).join(',')
+      );
 
     let transitionElementSelectors = [];
-    endTransitions.forEach(({ fromSelector, toAttributeName, toAttributeValue }) => {
+    endTransitions.forEach(({ fromSelector, toAttributeName, toAttributeValue, transitionName }) => {
       if (fromSelector) {
-        const viewTransitionName = fromSelector.replace(/[^a-zA-Z0-9]/g, '');
+        let viewTransitionName = fromSelector.replace(/[^a-zA-Z0-9]/g, '');
         const transitionElement = document.querySelector<HTMLElement>(`[${toAttributeName}="${toAttributeValue}"]`);
-        cleanUpTransition(viewTransitionName);
         if (transitionElement) {
           const transitionElementSelector = getElementSelector(transitionElement) || '';
+          viewTransitionName = transitionName ? transitionName : viewTransitionName;
+          cleanUpTransition(viewTransitionName);
           transitionElement.style.viewTransitionName = viewTransitionName;
           transitionElementSelectors.push(transitionElementSelector)
           setTimeout(() => {
@@ -100,10 +110,12 @@ export const handleRouteChangeComplete = (currentRouterKey?: string) => {
     return;
   }
   const transitionElementSelectors = (sessionStorage.getItem(`__VTNH_view_transition_element_selector_${backRouterKey}`) || '').split(',');
-  transitionElementSelectors.forEach((selector) => {
+  const transitionNames = (sessionStorage.getItem(`__VTNH_view_transition_names_${backRouterKey}`) || '').split(',');
+  transitionElementSelectors.forEach((selector, i) => {
+    const transitionName = transitionNames[i];
     const viewTransitionName = selector.replace(/[^a-zA-Z0-9]/g, '');
     const transitionEndElement = document.querySelector<HTMLElement | null>(selector);
-    handleHistoryNavigationComplete(transitionEndElement, viewTransitionName);
+    handleHistoryNavigationComplete(transitionEndElement, transitionName ? transitionName : viewTransitionName);
   })
 }
 
@@ -111,7 +123,8 @@ const handleHistoryNavigationComplete = (transitionEndElement: HTMLElement | nul
   endTransitions = [];
   cleanUpTransition(name);
   if (transitionEndElement) {
-    transitionEndElement.style.viewTransitionName = name;
+    const transitionName= transitionEndElement.getAttribute('data-transition-name');
+    transitionEndElement.style.viewTransitionName = transitionName ? transitionName : name;
   }
   setTimeout(() => {
     cleanUpTransition(name);

@@ -59,8 +59,11 @@ export const IframesList: React.FC<Props> =  ({ id }) => {
           {nextIframes.map((iframe, index) => {
             return (
               <Link href={`/${id + index + 1}`}>
-                <h3 data-title={iframe.content.thumbnail}
-                    className="text-lg lg:text-3xl font-bold pt-2 transitionable-title">Title - {id + index + 1}</h3>
+                <h3
+                  data-title={iframe.content.thumbnail}
+                  className="text-lg lg:text-3xl font-bold pt-2 transitionable-title">
+                  Title - {id + index + 1}
+                </h3>
                 <Image
                   data-src={iframe.content.thumbnail}
                   className="aspect-[16/9] transitionable-img"

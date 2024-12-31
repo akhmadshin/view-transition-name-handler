@@ -1,6 +1,6 @@
 {
   "name": "view-transition-name-handler",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "description": "Tame View Transitions API in Next.js Pages Router",
   "main": "./dist/index.js",

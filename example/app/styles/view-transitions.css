@@ -39,6 +39,13 @@
   isolation: none;
 }
 
+::view-transition-image-pair(transition-video) {
+  isolation: none;
+}
+::view-transition-image-pair(transition-title) {
+  isolation: none;
+}
+
 @media (prefers-reduced-motion) {
   ::view-transition-group(*),
   ::view-transition-old(*),
