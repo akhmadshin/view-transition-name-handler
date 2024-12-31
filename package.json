@@ -30,17 +30,8 @@
   "homepage": "https://view-transition-name-handler.vercel.app",
   "license": "MIT",
   "devDependencies": {
-    "@types/react": "^18.2.78",
     "bunchee": "^5.1.2",
-    "next": ">=12",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "typescript": "^5.4.5"
-  },
-  "peerDependencies": {
-    "next": ">=12",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
   },
   "packageManager": "pnpm@9.1.2"
 }
