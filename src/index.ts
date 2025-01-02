@@ -27,6 +27,8 @@ const getElementSelector = (elm: Element) => {
   return names.join(">");
 }
 
+const getViewTransitionNameFromSelector = (selector: string) => selector.replace(/[^a-zA-Z0-9]/g, '');
+
 export const handleTransitionStarted = (transitions: {
   fromElement?: HTMLElement | null;
   transitionName?: string;
@@ -38,7 +40,7 @@ export const handleTransitionStarted = (transitions: {
       return
     }
     const linkSelector = getElementSelector(fromElement);
-    const viewTransitionName = linkSelector.replace(/[^a-zA-Z0-9]/g, '');
+    const viewTransitionName = getViewTransitionNameFromSelector(linkSelector);
     cleanUpTransition(viewTransitionName);
     fromElement.style.viewTransitionName = transitionName ? transitionName : viewTransitionName;
     return {
@@ -48,7 +50,6 @@ export const handleTransitionStarted = (transitions: {
       toAttributeValue,
     };
   })
-
 }
 
 export const handleHistoryTransitionStarted = (navigatedRouterKey: string = 'initial') => {
@@ -61,7 +62,7 @@ export const handleHistoryTransitionStarted = (navigatedRouterKey: string = 'ini
     const previousSelector = previousTransitionElementSelectors[i];
     const transitionName = transitionNames[i];
     if (selector && previousSelector) {
-      let viewTransitionName = previousSelector.replace(/[^a-zA-Z0-9]/g, '');
+      let viewTransitionName = getViewTransitionNameFromSelector(previousSelector);
       const transitionElement = document.querySelector<HTMLElement>(selector);
       if (transitionElement) {
         viewTransitionName = transitionName ? transitionName : viewTransitionName
@@ -91,7 +92,7 @@ export const handleRouteChangeComplete = (currentRouterKey?: string) => {
     let transitionElementSelectors = [];
     endTransitions.forEach(({ fromSelector, toAttributeName, toAttributeValue, transitionName }) => {
       if (fromSelector) {
-        let viewTransitionName = fromSelector.replace(/[^a-zA-Z0-9]/g, '');
+        let viewTransitionName = getViewTransitionNameFromSelector(fromSelector);
         const transitionElement = document.querySelector<HTMLElement>(`[${toAttributeName}="${toAttributeValue}"]`);
         if (transitionElement) {
           const transitionElementSelector = getElementSelector(transitionElement) || '';
@@ -112,8 +113,11 @@ export const handleRouteChangeComplete = (currentRouterKey?: string) => {
   const transitionElementSelectors = (sessionStorage.getItem(`__VTNH_view_transition_element_selector_${backRouterKey}`) || '').split(',');
   const transitionNames = (sessionStorage.getItem(`__VTNH_view_transition_names_${backRouterKey}`) || '').split(',');
   transitionElementSelectors.forEach((selector, i) => {
+    if (!selector) {
+      return;
+    }
     const transitionName = transitionNames[i];
-    const viewTransitionName = selector.replace(/[^a-zA-Z0-9]/g, '');
+    const viewTransitionName = getViewTransitionNameFromSelector(selector);
     const transitionEndElement = document.querySelector<HTMLElement | null>(selector);
     handleHistoryNavigationComplete(transitionEndElement, transitionName ? transitionName : viewTransitionName);
   })
