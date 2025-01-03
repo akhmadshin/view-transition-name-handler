@@ -1,7 +1,6 @@
-import { MOCK_THUMBNAILS } from '@/constants/MOCK_THUMBNAILS';
 import React from 'react';
 import { Container } from '@/components/Container';
-import { Image } from '@/components/image';
+import { Image } from '@/components/Image';
 import { Link } from '@/components/Link';
 import { MOCK_YOUTUBE_IFRAMES } from '@/constants/MOCK_YOUTUBE_IFRAMES';
 import { YouTubeEmbed } from '@/components/YouTubeEmbed';
@@ -58,7 +57,7 @@ export const IframesList: React.FC<Props> =  ({ id }) => {
         <div className="my-4 block grid grid-rows-2 grid-cols-2 gap-4">
           {nextIframes.map((iframe, index) => {
             return (
-              <Link href={`/${id + index + 1}`}>
+              <Link href={`/${id + index + 1}`} key={index}>
                 <h3
                   data-title={iframe.content.thumbnail}
                   className="text-lg lg:text-3xl font-bold pt-2 transitionable-title">
@@ -67,7 +66,6 @@ export const IframesList: React.FC<Props> =  ({ id }) => {
                 <Image
                   data-src={iframe.content.thumbnail}
                   className="aspect-[16/9] transitionable-img"
-                  priority
                   sizes="100vw"
                   src={iframe.content.thumbnail}
                   width={1600}

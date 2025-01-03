@@ -11,7 +11,6 @@ export const Link: React.FC<PropsWithChildren<Props>> = ({ children, onClick, pl
     if (onClick) {
       onClick(e);
     }
-    window.placeholderData = placeholderData;
 
     const transitionImg = e.currentTarget.querySelector<HTMLImageElement>('.transitionable-img') || document.querySelector('#transition-video');
     const transitionTitle = e.currentTarget.querySelector<HTMLImageElement>('.transitionable-title') || document.querySelector('#transition-title');

@@ -83,7 +83,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     router.subscribe('onLoad', (props) => {
-      console.log('props = ', props);
       handleRouteChangeComplete(router.history.location.state.key);
     })
 
