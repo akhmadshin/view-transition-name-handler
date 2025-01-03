@@ -1,12 +1,13 @@
 /**
  * Key representing the current state of the router.
  */
-let key = 'initial';
+let key: string = 'initial';
 
 /**
  * Stores the previous state key for navigation through history.
  */
-let previousKey = undefined;
+let previousKey: string | undefined = undefined;
+
 /**
  * Array to hold transition data for finishing transition at the end of a navigation.
  */
@@ -23,44 +24,37 @@ interface TransitionStorageData {
 }
 
 /**
- * Cleans up the view transition name from an element.
- * @param {string} name - The transition name to clean up.
- */
-const cleanUpTransition = (name: string) => {
-  const el = document.querySelector<HTMLElement>(`[style*="view-transition-name: ${name}"]`);
-  if (el) {
-    el.style.viewTransitionName = '';
-  }
-}
-
-/**
  * Generates a unique CSS selector for a given DOM element, moving up the DOM tree until it reaches the BODY tag.
  * @param elm - The DOM element to generate a selector for.
  * @return A CSS selector string.
  */
-const getElementSelector = (elm: Element): string => {
+function getElementSelector(elm: Element): string {
   if (elm.tagName === "BODY") return "BODY";
-  const names = [];
-  while (elm.parentElement && elm.tagName.toUpperCase() !== "BODY") {
+  const names: string[] = [];
+  while (elm.parentElement && elm.tagName !== "BODY") {
     if (elm.id) {
       names.unshift(`#${elm.id}`);
       break;
     } else {
-      let c = 1, e = elm;
-      for (; e.previousElementSibling; e = e.previousElementSibling, c++) {}
-      names.unshift(`${elm.tagName}:nth-child(${c})`);
+      let index = 1, sibling = elm;
+      while (sibling.previousElementSibling) {
+        sibling = sibling.previousElementSibling;
+        index++;
+      }
+      names.unshift(`${elm.tagName}:nth-child(${index})`);
     }
     elm = elm.parentElement;
   }
   return names.join(">");
 }
+
 /**
  * Stores transition information in sessionStorage for later retrieval.
  * @param fromKey - Key representing the state from which the transition starts.
  * @param toKey - Key representing the state to which the transition goes.
  * @param value - An array of TransitionStorageData to store.
  */
-const setTransitionInfo = (fromKey: string, toKey: string, value: TransitionStorageData[]) => {
+function setTransitionInfo(fromKey: string, toKey: string, value: TransitionStorageData[]): void {
   sessionStorage.setItem(
     `__VTNH_view_transition_${fromKey}_${toKey}_`,
     JSON.stringify(value)
@@ -73,7 +67,7 @@ const setTransitionInfo = (fromKey: string, toKey: string, value: TransitionStor
  * @param toKey - Key representing the ending state of the transition.
  * @return An array of TransitionStorageData or an empty array if not found or error.
  */
-const getTransitionInfo = (fromKey: string, toKey: string): TransitionStorageData[] => {
+function getTransitionInfo(fromKey: string, toKey: string): TransitionStorageData[] {
   const storageKey = `__VTNH_view_transition_${fromKey}_${toKey}_`;
   const storedValue = sessionStorage.getItem(storageKey);
   if (!storedValue) return [];
@@ -91,14 +85,16 @@ const getTransitionInfo = (fromKey: string, toKey: string): TransitionStorageDat
  * @param selector - The CSS selector to convert.
  * @return A string with only alphanumeric characters.
  */
-const getViewTransitionNameFromSelector = (selector: string) => selector.replace(/[^a-zA-Z0-9]/g, '');
+function getViewTransitionNameFromSelector(selector: string): string {
+  return selector.replace(/[^a-zA-Z0-9]/g, '');
+}
 
 /**
  * Applies a view transition name to an element, cleaning up any existing transition name first.
  * @param transitionEndElement - The element to apply the transition name to.
  * @param viewTransitionName - The name to set for the view transition.
  */
-const setViewTransitionName = (transitionEndElement: HTMLElement | null, viewTransitionName: string) => {
+function setViewTransitionName(transitionEndElement: HTMLElement | null, viewTransitionName: string): void {
   if (transitionEndElement && viewTransitionName) {
     cleanUpTransition(viewTransitionName);
     transitionEndElement.style.viewTransitionName = viewTransitionName;
@@ -106,15 +102,27 @@ const setViewTransitionName = (transitionEndElement: HTMLElement | null, viewTra
 }
 
 /**
- * Processes transitions when they start, setting view-transition-name and updating endTransitions variable  .
+ * Removes the view transition name from an element.
+ * @param {string} name - The transition name to clean up.
+ */
+function cleanUpTransition(name: string): void {
+  const el = document.querySelector<HTMLElement>(`[style*="view-transition-name: ${name}"]`);
+  if (el) {
+    el.style.viewTransitionName = '';
+  }
+}
+
+
+/**
+ * Processes transitions when they start, setting view-transition-name and updating endTransitions variable.
  * @param transitions - An array of transition data including elements, attributes, and transition specifics.
  */
-export const handleTransitionStarted = (transitions: {
+export function handleTransitionStarted(transitions: {
   fromElement?: HTMLElement | null;
   transitionName?: string;
   toAttributeName?: string;
   toAttributeValue: string;
-}[]) => {
+}[]): void {
   endTransitions = transitions
     .filter(({ fromElement }) => fromElement)
     .map(({ fromElement, toAttributeName = 'src', toAttributeValue, transitionName = '' }) => {
@@ -127,14 +135,14 @@ export const handleTransitionStarted = (transitions: {
         toAttributeName,
         toAttributeValue,
       };
-  })
+    });
 }
 
 /**
  * Handles the start of a history-based transition, applying previous transition data to elements.
  * @param navigatedRouterKey - The key of the router state being navigated to.
  */
-export const handleHistoryTransitionStarted = (navigatedRouterKey: string = 'initial') => {
+export function handleHistoryTransitionStarted(navigatedRouterKey: string = 'initial'): void {
   const currentKey = key ?? 'initial';
   const data = getTransitionInfo(currentKey, navigatedRouterKey);
   const prevData = getTransitionInfo(navigatedRouterKey, currentKey);
@@ -142,11 +150,11 @@ export const handleHistoryTransitionStarted = (navigatedRouterKey: string = 'ini
   data.forEach(({ transitionName, fromSelector }, index) => {
     const previousTransition = prevData[index];
     if (fromSelector && previousTransition?.fromSelector) {
-      const viewTransitionName = transitionName || getViewTransitionNameFromSelector(previousTransition?.fromSelector);
+      const viewTransitionName = transitionName || getViewTransitionNameFromSelector(previousTransition.fromSelector);
       const transitionElement = document.querySelector<HTMLElement>(fromSelector);
       setViewTransitionName(transitionElement, viewTransitionName);
     }
-  })
+  });
 }
 
 /**
@@ -154,38 +162,43 @@ export const handleHistoryTransitionStarted = (navigatedRouterKey: string = 'ini
  * @param currentRouterKey - The key of the current router state, defaults to 'initial' if not provided.
  * @returns The result of either handleDirectNavigation or handleHistoryNavigation based on transitions.
  */
-export const handleRouteChangeComplete = (currentRouterKey?: string) => {
+export function handleRouteChangeComplete(currentRouterKey?: string): void {
   const newKey = currentRouterKey ?? 'initial';
-  previousKey = key ?? 'initial';
+  previousKey = key;
   key = newKey;
-  return endTransitions.length ? handleDirectNavigation() : handleHistoryNavigation()
+
+  if (endTransitions.length) {
+    handleNavigationComplete();
+  } else {
+    handleHistoryNavigationComplete();
+  }
 }
 
 /**
- * Handles direct navigation by setting up forward and back transitions.
+ * Handles navigation by setting up forward and back transitions.
  */
-const handleDirectNavigation = () => {
-  setTransitionInfo(previousKey, key, endTransitions)
+function handleNavigationComplete(): void {
+  setTransitionInfo(previousKey ?? 'initial', key, endTransitions);
   const reverseTransitions = endTransitions.map(({ toAttributeName, toAttributeValue, transitionName }) => {
     const transitionElement = document.querySelector<HTMLElement>(`[${toAttributeName}="${toAttributeValue}"]`);
     if (transitionElement) {
-      setViewTransitionName(transitionElement, transitionName)
-      const selector = getElementSelector(transitionElement) || '';
+      setViewTransitionName(transitionElement, transitionName);
+      const selector = getElementSelector(transitionElement);
       return { fromSelector: selector, transitionName };
     }
   }).filter(Boolean) as TransitionStorageData[];
-  setTransitionInfo(key, previousKey, reverseTransitions)
+  setTransitionInfo(key, previousKey ?? 'initial', reverseTransitions);
   endTransitions = [];
 }
 
 /**
  * Handles navigation from history by applying previously stored transitions.
  */
-const handleHistoryNavigation = () => {
-  const transitionData = getTransitionInfo(key, previousKey);
-  transitionData?.forEach(({ transitionName, fromSelector }) => {
+function handleHistoryNavigationComplete(): void {
+  const transitionData = getTransitionInfo(key, previousKey ?? 'initial');
+  transitionData.forEach(({ transitionName, fromSelector }) => {
     const viewTransitionName = transitionName || getViewTransitionNameFromSelector(fromSelector);
     const element = document.querySelector<HTMLElement>(fromSelector);
     setViewTransitionName(element, viewTransitionName);
-  })
+  });
 }
