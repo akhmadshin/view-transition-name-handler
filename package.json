@@ -1,6 +1,6 @@
 {
   "name": "view-transition-name-handler",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "description": "That library manages the view-transition-name property between DOM nodes during navigation",
   "main": "./dist/index.js",
