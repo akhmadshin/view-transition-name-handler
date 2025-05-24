@@ -1,4 +1,4 @@
-import { Container } from '@/components/Container';
+import { Container } from '~/components/Container';
 import { GithubIcon } from 'lucide-react';
 
 export const Credits = () => {

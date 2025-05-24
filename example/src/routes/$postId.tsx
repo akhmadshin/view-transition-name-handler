@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import React, { useMemo } from 'react'
-import { ImagesList } from '@/components/ImagesList'
-import { IframesList } from '@/components/IframesList';
+import { IframesList } from '~/components/IframesList';
 
 export const Route = createFileRoute('/$postId')({
   loader: async ({ params: { postId } }) => {

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Container } from '@/components/Container';
-import { Image } from '@/components/Image';
-import { Link } from '@/components/Link';
-import { MOCK_YOUTUBE_IFRAMES } from '@/constants/MOCK_YOUTUBE_IFRAMES';
-import { YouTubeEmbed } from '@/components/YouTubeEmbed';
+import { Container } from '~/components/Container';
+import { Image } from '~/components/Image';
+import { Link } from '~/components/Link';
+import { MOCK_YOUTUBE_IFRAMES } from '~/constants/MOCK_YOUTUBE_IFRAMES';
+import { YouTubeEmbed } from '~/components/YouTubeEmbed';
 import { useRouterState } from '@tanstack/react-router';
 
 interface Props {
@@ -20,7 +20,6 @@ export const getYoutubeIdFromUrl = (url: string) => {
 
 export const IframesList: React.FC<Props> =  ({ id }) => {
   const iframe = MOCK_YOUTUBE_IFRAMES[id % 4];
-  const routerState = useRouterState();
 
   const nextIframes = [
     MOCK_YOUTUBE_IFRAMES[(id + 1) % 4],
@@ -57,7 +56,10 @@ export const IframesList: React.FC<Props> =  ({ id }) => {
         <div className="my-4 block grid grid-rows-2 grid-cols-2 gap-4">
           {nextIframes.map((iframe, index) => {
             return (
-              <Link href={`/${id + index + 1}`} key={index}>
+              <Link
+                to="/$postId"
+                params={{ postId: String(id + index + 1) }}
+                key={index}>
                 <h3
                   data-title={iframe.content.thumbnail}
                   className="text-lg lg:text-3xl font-bold pt-2 transitionable-title">

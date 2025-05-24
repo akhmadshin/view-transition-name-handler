@@ -1,4 +1,4 @@
-import { ParentComponent } from '@/types/general';
+import { ParentComponent } from '~/types/general';
 import { HTMLProps } from 'react';
 
 export const Container: ParentComponent<HTMLProps<HTMLDivElement>> = (

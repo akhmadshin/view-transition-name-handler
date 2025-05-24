@@ -1,24 +1,20 @@
 import {
+  HeadContent,
   Outlet,
-  ScrollRestoration,
-  createRootRouteWithContext, useRouter,
+  Scripts,
+  createRootRoute, useRouter,
 } from '@tanstack/react-router'
-import { Meta, Scripts } from '@tanstack/start'
 import * as React from 'react'
-import type { QueryClient } from '@tanstack/react-query'
-import { DefaultCatchBoundary } from '@/components/DefaultCatchBoundary'
-import { NotFound } from '@/components/NotFound'
-import appCss from '@/styles/app.css?url'
-import ytEmbed from '@/styles/yt-embed.css?url'
-import viewTransitions from '@/styles/view-transitions.css?url'
-import { Layout } from '@/components/Layout';
+import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary'
+import { NotFound } from '~/components/NotFound'
+import appCss from '~/styles/app.css?url'
+import ytEmbed from '~/styles/yt-embed.css?url'
+import { seo } from '~/utils/seo'
 import { useEffect } from 'react';
-import { handleRouteChangeComplete, handleHistoryTransitionStarted } from 'view-transition-name-handler';
-import { seo } from '@/lib/seo';
+import { Layout } from '~/components/Layout';
+import { handleHistoryTransitionStarted, handleRouteChangeComplete } from 'view-transition-name-handler';
 
-export const Route = createRootRouteWithContext<{
-  queryClient: QueryClient
-}>()({
+export const Route = createRootRoute({
   head: () => ({
     meta: [
       {
@@ -36,7 +32,6 @@ export const Route = createRootRouteWithContext<{
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
-      { rel: 'stylesheet', href: viewTransitions },
       { rel: 'stylesheet', href: ytEmbed },
       {
         rel: 'apple-touch-icon',
@@ -82,40 +77,30 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {
-    router.subscribe('onLoad', (props) => {
-      handleRouteChangeComplete(router.history.location.state.key);
+    router.subscribe('onLoad', () => {
+      if (router.history.location.state.key) {
+        handleRouteChangeComplete(router.history.location.state.key);
+      }
     })
 
     router.history.subscribe((prop) => {
-      if (prop.action.type === 'POP') {
-        handleHistoryTransitionStarted(prop.location.state.key);
+      if (prop.action.type === 'FORWARD' || prop.action.type === 'BACK') {
+        if (prop.location.state.key) {
+          handleHistoryTransitionStarted(prop.location.state.key);
+        }
       }
     })
   }, []);
 
-  useEffect(() => {
-    try {
-      Promise.all([
-        router.loadRouteChunk(router.routesByPath['/']),
-        router.loadRouteChunk(router.routesByPath['/$postId']),
-      ])
-    } catch (err) {
-      // Failed to preload route chunk
-    }
-  }, []);
-
   return (
-    <html className="scroll-pt-16">
+    <html>
       <head>
-        <Meta />
+        <HeadContent />
       </head>
       <body>
         <Layout>
           {children}
         </Layout>
-        <ScrollRestoration />
-        {/*<TanStackRouterDevtools position="bottom-right" />*/}
-        {/*<ReactQueryDevtools buttonPosition="bottom-left" />*/}
         <Scripts />
       </body>
     </html>

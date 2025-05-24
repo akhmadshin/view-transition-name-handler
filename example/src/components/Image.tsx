@@ -1,5 +1,5 @@
-import React, { forwardRef, ImgHTMLAttributes } from 'react';
-import { Component } from '@/types/general';
+import React, { ImgHTMLAttributes } from 'react';
+import { Component } from '~/types/general';
 
 export const Image: Component<ImgHTMLAttributes<HTMLImageElement>> = ({
   height,

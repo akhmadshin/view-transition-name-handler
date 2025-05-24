@@ -1,10 +1,10 @@
 # view-transition-name-handler
 
 That library manages the view-transition-name property between DOM nodes during navigation.
-* First class support for history(back/forward) navigation. 
+* First-class support for history (back/forward) navigation. 
 * Tiny size, less than 1 kB (gzip).
 * Works with any router/meta-framework.
-* Any scenario is possible. By utilizing custom data attributes, you can achieve transitioning between any tags (`<img>`/`<iframe>`/`<video>`/`<canvas>`/`<div>`).
+* Any scenario is possible. By using custom data attributes, you can achieve transitioning between any tags (`<img>`/`<iframe>`/`<video>`/`<canvas>`/`<div>`).
 
 ## Installation
 
@@ -19,16 +19,16 @@ $ yarn add view-transition-name-handler
 ### handleTransitionStarted
 Call that function before navigation
 ```
-handleTransitionStarted([{ fromElement, toAttributeName = 'src', toAttributeValue, transitionName = '' }])
+handleTransitionStarted(currentRouterKey: string, [{ fromElement, toAttributeName = 'src', toAttributeValue, transitionName }])
 ```
-* fromElement - DOM element that starts transition
-* toAttributeName and toAttributeValue - are used to find DOM element that should finish transition
-* transitionName - used for setting view-transition-name property, optional
+* fromElement—DOM element that starts transition
+* toAttributeName and toAttributeValue are used to find a DOM element that should finish transition
+* transitionName—used for setting view-transition-name value
 
 ### handleHistoryTransitionStarted
 Should be called on "popstate" event.
 ```
-handleHistoryTransitionStarted(navigatedRouterKey: string = 'initial)
+handleHistoryTransitionStarted(navigatedRouterKey: string)
 ```
 
 ### handleRouteChangeComplete

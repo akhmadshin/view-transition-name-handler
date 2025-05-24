@@ -1,6 +1,6 @@
 import React from 'react';
-import { ParentComponent } from '@/types/general';
-import { Credits } from '@/components/Credits';
+import { ParentComponent } from '~/types/general';
+import { Credits } from '~/components/Credits';
 
 
 export const Layout: ParentComponent = ({ children }) => {

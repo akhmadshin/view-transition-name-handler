@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { IframesList } from '@/components/IframesList';
+import { IframesList } from '~/components/IframesList';
 
 export const Route = createFileRoute('/')({
   head: () => ({

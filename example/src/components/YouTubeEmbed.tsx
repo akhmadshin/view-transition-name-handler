@@ -1,5 +1,5 @@
 import LiteYouTubeEmbed, { LiteYouTubeProps } from 'react-lite-youtube-embed';
-import { Component } from '@/types/general';
+import { Component } from '~/types/general';
 
 export const YouTubeEmbed: Component<LiteYouTubeProps> = (props) => {
   return (
